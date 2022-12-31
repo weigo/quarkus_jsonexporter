@@ -1,0 +1,62 @@
+quarkus:
+  http:
+    port: 7979
+    test-port: -1
+"%test":
+  exporter:
+    modules:
+      - name: "default"
+        metrics:
+          - name: "simple_value"
+            help: "simple value"
+            path: "$.value"
+            valuetype: gauge
+            type: value
+      - name: "nested_structured_as_several_metrics_using_value"
+        metrics:
+          - name: nested_structured
+            help: nested structured
+            path: "$.data.service1"
+            valuetype: gauge
+            type: value
+            labels:
+              service: service1
+          - name: nested_structured
+            help: nested structured
+            path: "$.data.service2"
+            valuetype: gauge
+            type: value
+            labels:
+              service: service2
+      - name: "nested_structured_as_several_metrics_using_object"
+        metrics:
+          - name: nested_structured
+            help: nested structured
+            path: "$.data"
+            valuetype: gauge
+            type: object
+            labels:
+              service: service1
+            values:
+              service: "$.service1"
+          - name: nested_structured
+            help: nested structured
+            path: "$.data"
+            valuetype: gauge
+            type: object
+            labels:
+              service: service2
+            values:
+              service: '$.service2'
+      - name: "health"
+        metrics:
+          - name: health
+            help: Health Status
+            path: $[?(@.status=="UP")]
+            valuetype: GAUGE
+            type: value
+            labels:
+              x: y
+#            mapper:
+#              type: key_as_label
+#              label: service

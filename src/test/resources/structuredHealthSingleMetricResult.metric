@@ -1,0 +1,3 @@
+# HELP nested_structured_service nested structured
+# TYPE GAUGE
+nested_structured_service[service="service1"] 1.0

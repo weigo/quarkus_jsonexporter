@@ -1,0 +1,3 @@
+# HELP simple_value simple value
+# TYPE GAUGE
+simple_value 1.0

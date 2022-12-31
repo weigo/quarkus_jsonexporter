@@ -1,20 +1,39 @@
 package org.arachna.jsonexporter.registry;
 
-import org.eclipse.microprofile.metrics.Tag;
-
 import java.io.IOException;
 import java.io.Writer;
-import java.util.*;
+import java.util.Collection;
+import java.util.Iterator;
 
+import io.micrometer.core.instrument.Tag;
+
+/**
+ * Writer for the prometheus metrics format.
+ */
 public class TextFormat004Writer extends Writer {
     private final Writer writer;
 
+    /**
+     * Instantiate the prometheus format writer with a {@see Writer} instance used to do the actual writing.
+     *
+     * @param writer
+     *     {@see Writer} instance doing the actual writing
+     */
     public TextFormat004Writer(Writer writer) {
         this.writer = writer;
     }
 
-    public void write(Collection<MetricsRegistryImpl.MetricSamples> samples) throws IOException {
-        for (MetricsRegistryImpl.MetricSamples sampleList : samples) {
+    /**
+     * Emit the given metric samples in prometheus metrics format.
+     *
+     * @param samples
+     *     list of samples to write
+     *
+     * @throws IOException
+     *     when writing into the underlying writer fails
+     */
+    public void write(Collection<MetricsRegistry.MetricSamples> samples) throws IOException {
+        for (MetricsRegistry.MetricSamples sampleList : samples) {
             emitHeader(sampleList.head);
 
             for (AbstractSampleImpl sample : sampleList) {
@@ -33,9 +52,9 @@ public class TextFormat004Writer extends Writer {
 
             while (labels.hasNext()) {
                 Tag label = labels.next();
-                writer.write(label.getTagName());
+                writer.write(label.getKey());
                 writer.write("=\"");
-                writer.write(label.getTagValue());
+                writer.write(label.getValue());
                 writer.write("\"");
 
                 if (labels.hasNext()) {
@@ -62,28 +81,16 @@ public class TextFormat004Writer extends Writer {
         writer.write('\n');
     }
 
-    /**
-     * @param cbuf Array of characters
-     * @param off  Offset from which to start writing characters
-     * @param len  Number of characters to write
-     * @throws IOException
-     */
     @Override
     public void write(char[] cbuf, int off, int len) throws IOException {
         writer.write(cbuf, off, len);
     }
 
-    /**
-     * @throws IOException
-     */
     @Override
     public void flush() throws IOException {
         writer.flush();
     }
 
-    /**
-     * @throws IOException
-     */
     @Override
     public void close() throws IOException {
         writer.close();
