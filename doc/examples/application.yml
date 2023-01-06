@@ -1,0 +1,7 @@
+quarkus:
+  http:
+    port: 7978
+exporter:
+  modules:
+    - name: "default"
+      metrics:
