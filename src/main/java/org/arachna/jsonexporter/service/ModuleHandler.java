@@ -12,6 +12,7 @@ import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.ScrapeType;
 import org.arachna.jsonexporter.registry.MetricsRegistry;
 import org.arachna.jsonexporter.registry.TextFormat004Writer;
+import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
 /**
  * Handler for a collection of metrics subsumed under a module configuration.
@@ -33,11 +34,12 @@ public class ModuleHandler {
      * @param module
      *     module specifying the metrics to extract from the queried JSON
      */
-    ModuleHandler(Configuration configuration, JSonExporterConfig.Module module) {
+    ModuleHandler(Configuration configuration, JSonExporterConfig.Module module, ValueMapperFactory valueMapperFactory) {
         this.jsonProvider = configuration.jsonProvider();
         this.metricHandlers = module.metrics()
             .stream()
-            .map(metric -> ScrapeType.VALUE == metric.type() ? new ValueMetricHandler(metric) : new ObjectMetricHandler(metric))
+            .map(metric -> ScrapeType.VALUE == metric.type() ? new ValueMetricHandler(metric, valueMapperFactory)
+                                                             : new ObjectMetricHandler(metric, valueMapperFactory))
             .collect(Collectors.toList());
     }
 

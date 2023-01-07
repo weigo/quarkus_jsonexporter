@@ -2,11 +2,12 @@ package org.arachna.jsonexporter.config;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.arachna.jsonexporter.api.SampleType;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 import io.smallrye.config.ConfigMapping;
+import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
 
 /**
@@ -67,7 +68,7 @@ public interface JSonExporterConfig {
              *
              * @return the type of scrape to use for metric extraction
              */
-            @ConfigProperty(defaultValue = "VALUE")
+            @WithDefault("VALUE")
             ScrapeType type();
 
             /**
@@ -76,7 +77,7 @@ public interface JSonExporterConfig {
              * @return the type of metric the scraped value should be represented as.
              */
             @WithName("valuetype")
-            @ConfigProperty(defaultValue = "GAUGE")
+            @WithDefault("GAUGE")
             SampleType sampleType();
 
             /**
@@ -107,14 +108,40 @@ public interface JSonExporterConfig {
              */
             @WithName("values")
             Map<String, String> valueSpecs();
-            //            Optional<Mapper> mapper();
+
+            /**
+             * Specification of mapper to use for scraped values
+             *
+             * @return mapper specification
+             */
+            Optional<MapperSpec> mapper();
         }
 
-        interface Mapper {
+        /**
+         * Map keys to double values.
+         */
+        interface KeyValue {
+            String key();
+
+            Double value();
+        }
+
+        interface MapperSpec {
+            /**
+             * Specify the mapper type.
+             *
+             * @return type of mapper to use.
+             */
             @WithName("type")
+            @WithDefault("DEFAULT")
             MapperType mapperType();
 
-            String label();
+            /**
+             * Return a list of string to double values to use when mapping JSON values to metrics.
+             *
+             * @return list of key value pairs
+             */
+            List<KeyValue> mappings();
         }
     }
 }

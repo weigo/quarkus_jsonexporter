@@ -10,6 +10,7 @@ import net.minidev.json.JSONArray;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.ScrapeType;
 import org.arachna.jsonexporter.registry.MetricsRegistry;
+import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
 /**
  * Handler for extracting JSON objects from a JSON metric.
@@ -26,7 +27,7 @@ class ObjectMetricHandler extends AbstractMetricHandler implements MetricHandler
      * @param metricSpec
      *     metric specification to use for configuration.
      */
-    public ObjectMetricHandler(JSonExporterConfig.Module.Metric metricSpec) {
+    public ObjectMetricHandler(JSonExporterConfig.Module.Metric metricSpec, ValueMapperFactory valueMapperFactory) {
         super(metricSpec);
 
         if (!ScrapeType.OBJECT.equals(metricSpec.type())) {
@@ -39,7 +40,8 @@ class ObjectMetricHandler extends AbstractMetricHandler implements MetricHandler
             for (Map.Entry<String, String> valueSpec : metricSpec.valueSpecs().entrySet()) {
                 if (valueSpec.getValue().startsWith("$")) {
                     JsonPath path = JsonPath.compile(valueSpec.getValue());
-                    this.valueHandlers.add(new JSonPathValueHandler(valueSpec.getKey(), path));
+                    this.valueHandlers.add(
+                        new JSonPathValueHandler(valueSpec.getKey(), path, valueMapperFactory.create(metricSpec.mapper())));
                 } else {
                     this.valueHandlers.add(new ConstantValueHandler(valueSpec.getKey(), Double.parseDouble(valueSpec.getValue())));
                 }

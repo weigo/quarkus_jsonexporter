@@ -11,6 +11,7 @@ import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
 
 import org.arachna.jsonexporter.config.JSonExporterConfig;
+import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
 import io.smallrye.common.constraint.NotNull;
 
@@ -31,6 +32,9 @@ public class JSonScrapeService {
     @Inject
     JSonScrapeServiceProvider jsonScrapeServiceProvider;
 
+    @Inject
+    ValueMapperFactory valueMapperFactory;
+
     /**
      * Map of configured Modules.
      */
@@ -43,9 +47,7 @@ public class JSonScrapeService {
     void init() {
         final Configuration configuration = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST);
 
-        for (JSonExporterConfig.Module module : config.modules()) {
-            modules.put(module.name(), new ModuleHandler(configuration, module));
-        }
+        config.modules().forEach(module -> modules.put(module.name(), new ModuleHandler(configuration, module, valueMapperFactory)));
     }
 
     /**
