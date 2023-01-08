@@ -6,6 +6,7 @@ import com.jayway.jsonpath.JsonPath;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.ScrapeType;
 import org.arachna.jsonexporter.registry.MetricsRegistry;
+import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
 /**
  * Handler for extracting concrete values from a JSON object.
@@ -19,11 +20,12 @@ public class ValueMetricHandler extends AbstractMetricHandler {
      * @param metricSpec
      *     metric specification to build the handler from
      */
-    public ValueMetricHandler(JSonExporterConfig.Module.Metric metricSpec) {
+    public ValueMetricHandler(JSonExporterConfig.Module.Metric metricSpec, ValueMapperFactory valueMapperFactory) {
         super(metricSpec);
 
         if (!ScrapeType.VALUE.equals(metricSpec.type())) {
-            throw new IllegalArgumentException("A value metric handler configuration should specify 'VALUE' as scrape type!");
+            throw new IllegalArgumentException(
+                String.format("A value metric handler configuration should specify '%s' as scrape type!", ScrapeType.VALUE.name()));
         }
 
         if (!metricSpec.valueSpecs().isEmpty()) {
@@ -32,7 +34,8 @@ public class ValueMetricHandler extends AbstractMetricHandler {
         }
 
         try {
-            this.valueHandlers.add(new JSonPathValueHandler(JsonPath.compile(metricSpec.path())));
+            this.valueHandlers.add(
+                new JSonPathValueHandler(JsonPath.compile(metricSpec.path()), valueMapperFactory.create(metricSpec.mapper())));
         } catch (InvalidPathException e) {
             throw new IllegalArgumentException(
                 String.format("Metric '%s' specified an illegal JSonPath: '%s':%n'%s'%n", metricSpec.name(), metricSpec.path(),

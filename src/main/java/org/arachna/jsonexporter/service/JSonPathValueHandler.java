@@ -2,22 +2,14 @@ package org.arachna.jsonexporter.service;
 
 import com.jayway.jsonpath.JsonPath;
 
+import org.arachna.jsonexporter.service.mapper.ValueMapper;
+
 /**
  * Handler for extraction of a single value from a JSON metric.
  *
  * @author weigo
  */
 public class JSonPathValueHandler implements ValueHandler {
-    /**
-     * Value to extract from {@link Boolean#FALSE}.
-     */
-    private static final Double ZERO = 0d;
-
-    /**
-     * Value to extract from {@link Boolean#TRUE}.
-     */
-    private static final Double ONE = 1d;
-
     /**
      * JsonPath to use for extracting the value.
      */
@@ -28,6 +20,8 @@ public class JSonPathValueHandler implements ValueHandler {
      */
     final String name;
 
+    final ValueMapper mapper;
+
     /**
      * Use this constructor when a value name shall be appended to the respective metric name.
      *
@@ -35,8 +29,11 @@ public class JSonPathValueHandler implements ValueHandler {
      *     name to append to metric name
      * @param path
      *     JSONPath to use to extract value from a JSON metric
+     * @param mapper
+     *     value mapper to use on extracted value
      */
-    JSonPathValueHandler(String name, JsonPath path) {
+    JSonPathValueHandler(String name, JsonPath path, final ValueMapper mapper) {
+        this.mapper = mapper;
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("Name must not be null or empty!");
         }
@@ -50,8 +47,11 @@ public class JSonPathValueHandler implements ValueHandler {
      *
      * @param path
      *     JSONPath to use to extract value from a JSON metric
+     * @param mapper
+     *     value mapper to use on extracted value
      */
-    JSonPathValueHandler(JsonPath path) {
+    JSonPathValueHandler(JsonPath path, final ValueMapper mapper) {
+        this.mapper = mapper;
         this.name = "";
         this.path = path;
     }
@@ -75,13 +75,7 @@ public class JSonPathValueHandler implements ValueHandler {
     @Override
     public Double handle(Object metric) {
         Object tmp = path.read(metric);
-        Double result = null;
-
-        if (tmp instanceof Number) {
-            result = ((Number) tmp).doubleValue();
-        } else if (tmp instanceof Boolean) {
-            result = Boolean.TRUE.equals(tmp) ? ONE : ZERO;
-        }
+        Double result = mapper.map(tmp);
 
         if (result == null) {
             throw new IllegalStateException(

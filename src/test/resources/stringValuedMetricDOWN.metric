@@ -1,0 +1,3 @@
+# HELP health_status Health Status
+# TYPE GAUGE
+health_status 0.0
