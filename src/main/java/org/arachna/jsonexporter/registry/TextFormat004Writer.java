@@ -77,7 +77,9 @@ public class TextFormat004Writer extends Writer {
         writer.write(sample.getHelp());
         writer.write('\n');
         writer.write("# TYPE ");
-        writer.write(sample.getType().name());
+        writer.write(sample.getName());
+        writer.write(' ');
+        writer.write(sample.getType().name().toLowerCase());
         writer.write('\n');
     }
 

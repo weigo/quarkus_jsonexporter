@@ -1,4 +1,4 @@
 # HELP nested_structured nested structured
-# TYPE GAUGE
+# TYPE nested_structured gauge
 nested_structured[service="service1"] 1.0
 nested_structured[service="service2"] 0.0
