@@ -3,6 +3,7 @@ package org.arachna.jsonexporter.service;
 import java.io.IOException;
 import javax.inject.Inject;
 
+import org.arachna.jsonexporter.api.JsonExporterException;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 import org.junit.jupiter.api.Assertions;
@@ -37,6 +38,6 @@ class ValueMetricHandlerTest extends AbstractMetricHandlerTest {
         JSonExporterConfig.Module.Metric metric = getMetric(moduleName, metricName);
         ValueMetricHandler handler = new ValueMetricHandler(metric, valueMapperFactory);
 
-        Assertions.assertThrows(IllegalStateException.class, () -> handler.collectMetrics(registry, readDocument(jsonResourceName)));
+        Assertions.assertThrows(JsonExporterException.class, () -> handler.collectMetrics(registry, readDocument(jsonResourceName)));
     }
 }

@@ -8,8 +8,8 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 
 import com.jayway.jsonpath.Configuration;
-import com.jayway.jsonpath.Option;
 
+import org.arachna.jsonexporter.api.JsonExporterException;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
@@ -45,7 +45,7 @@ public class JSonScrapeService {
      */
     @PostConstruct
     void init() {
-        final Configuration configuration = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST);
+        final Configuration configuration = Configuration.defaultConfiguration(); //.addOptions(Option.ALWAYS_RETURN_LIST);
 
         config.modules().forEach(module -> modules.put(module.name(), new ModuleHandler(configuration, module, valueMapperFactory)));
     }
@@ -67,7 +67,7 @@ public class JSonScrapeService {
         ModuleHandler handler = modules.get(module);
 
         if (handler == null) {
-            throw new IllegalStateException(String.format("No such module: '%s'!", module));
+            throw new JsonExporterException(String.format("Module '%s' not found for handling scrape target '%s'!", module, target));
         }
 
         final ScrapeService scrapeService = this.jsonScrapeServiceProvider.getService(target);

@@ -8,8 +8,11 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
+import org.arachna.jsonexporter.api.JsonExporterNotFoundException;
 import org.arachna.jsonexporter.service.JSonScrapeService;
+import org.jboss.logging.Logger;
 
 /**
  * REST endpoint for scraping JSON metrics.
@@ -21,6 +24,9 @@ public class JsonExportResource {
      */
     @Inject
     JSonScrapeService scrapeService;
+
+    @Inject
+    Logger logger;
 
     /**
      * @param targetUrl
@@ -35,9 +41,23 @@ public class JsonExportResource {
      */
     @GET
     @Produces(MediaType.TEXT_PLAIN)
-    public String probe(@QueryParam("target") Optional<String> targetUrl, @QueryParam("module") Optional<String> module)
+    public Response probe(@QueryParam("target") Optional<String> targetUrl, @QueryParam("module") Optional<String> module)
         throws IOException {
-        return scrapeService.scrape(targetUrl.orElseThrow(() -> new IllegalArgumentException("Missing scrape target!")),
-            module.orElse("default"));
+        Response response;
+
+        try {
+            if (targetUrl.isPresent()) {
+                response = Response.ok(scrapeService.scrape(targetUrl.get(), module.orElse("default"))).build();
+            } else {
+                response = Response.status(Response.Status.NOT_FOUND).entity("Missing target URL!").build();
+            }
+        } catch (JsonExporterNotFoundException e) {
+            String message = String.format("Scrape target '%s' not found!", targetUrl.get());
+            response = Response.status(Response.Status.NOT_FOUND).entity(message).build();
+
+            logger.errorf(message);
+        }
+
+        return response;
     }
 }

@@ -1,7 +1,9 @@
 package org.arachna.jsonexporter.service;
 
 import com.jayway.jsonpath.JsonPath;
+import com.jayway.jsonpath.PathNotFoundException;
 
+import org.arachna.jsonexporter.api.JsonExporterException;
 import org.arachna.jsonexporter.service.mapper.ValueMapper;
 
 /**
@@ -74,12 +76,20 @@ public class JSonPathValueHandler implements ValueHandler {
      */
     @Override
     public Double handle(Object metric) {
-        Object tmp = path.read(metric);
-        Double result = mapper.map(tmp);
+        Double result;
 
-        if (result == null) {
-            throw new IllegalStateException(
-                String.format("Could not extract result from metric '%s' using path '%s'. Result was %s", metric, path.getPath(), tmp));
+        try {
+            Object tmp = path.read(metric);
+            result = mapper.map(tmp);
+
+            if (result == null) {
+                throw new JsonExporterException(
+                    String.format("Could not extract result from metric '%s' using path '%s'. Result was %s", metric, path.getPath(), tmp));
+            }
+        } catch (PathNotFoundException p) {
+            throw new JsonExporterException(
+                String.format("Failed to extract result from metric '%s' using path '%s'!%n%s", metric, path.getPath(),
+                    p.getLocalizedMessage()));
         }
 
         return result;

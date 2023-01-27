@@ -9,6 +9,8 @@ import java.util.Spliterator;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import org.arachna.jsonexporter.api.JsonExporterException;
+
 /**
  * Registry for metric samples.
  */
@@ -45,12 +47,12 @@ public class MetricsRegistry {
                         .collect(Collectors.joining(", ")) + ']';
                     String message =
                         String.format("A metric with name '%s' and tags '%s' has already been registered!", current.getName(), sb);
-                    throw new IllegalArgumentException(message);
+                    throw new JsonExporterException(message);
                 } else if (!sample.help.equals(current.help)) {
                     String message =
                         String.format("A metric with name '%s' and help '%s' (this instances help: '%s') has already been registered!",
                             current.name, current.help, sample.help);
-                    throw new IllegalArgumentException(message);
+                    throw new JsonExporterException(message);
                 }
             }
         }
