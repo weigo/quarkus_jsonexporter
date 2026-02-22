@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.URI;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import javax.enterprise.context.ApplicationScoped;
 
 import org.apache.commons.io.IOUtils;
 
 import io.quarkus.test.Mock;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * @author weigo

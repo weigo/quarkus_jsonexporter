@@ -3,10 +3,11 @@ package org.arachna.jsonexporter.service.mapper;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
 
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.MapperType;
+
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Factory for value mappers based on configuration.
@@ -28,7 +29,7 @@ public class ValueMapperFactory {
 
         @Override
         public List<JSonExporterConfig.Module.KeyValue> mappings() {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
     };
 

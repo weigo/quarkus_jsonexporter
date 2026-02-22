@@ -1,7 +1,7 @@
 package org.arachna.jsonexporter.service;
 
-import javax.annotation.Priority;
-import javax.ws.rs.core.Response;
+import jakarta.annotation.Priority;
+import jakarta.ws.rs.core.Response;
 
 import org.arachna.jsonexporter.api.JsonExporterNotFoundException;
 import org.eclipse.microprofile.rest.client.ext.ResponseExceptionMapper;

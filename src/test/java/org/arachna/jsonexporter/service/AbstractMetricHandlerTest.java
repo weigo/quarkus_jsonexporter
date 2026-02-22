@@ -2,7 +2,8 @@ package org.arachna.jsonexporter.service;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import javax.inject.Inject;
+
+import jakarta.inject.Inject;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;
@@ -62,9 +63,6 @@ abstract class AbstractMetricHandlerTest extends AbstractBaseTest {
     protected JSonExporterConfig.Module.Metric getMetric(String moduleName, String metricName) {
         JSonExporterConfig.Module healthModule =
             config.modules().stream().filter(module -> module.name().equals(moduleName)).findFirst().get();
-        JSonExporterConfig.Module.Metric metric =
-            healthModule.metrics().stream().filter(m -> m.name().equals(metricName)).findFirst().get();
-
-        return metric;
+        return healthModule.metrics().stream().filter(m -> m.name().equals(metricName)).findFirst().get();
     }
 }

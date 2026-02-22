@@ -1,7 +1,7 @@
 package org.arachna.jsonexporter.service;
 
 import java.io.IOException;
-import javax.inject.Inject;
+import jakarta.inject.Inject;
 
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.Option;

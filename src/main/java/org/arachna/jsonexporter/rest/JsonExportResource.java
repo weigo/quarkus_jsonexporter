@@ -2,13 +2,15 @@ package org.arachna.jsonexporter.rest;
 
 import java.io.IOException;
 import java.util.Optional;
-import javax.inject.Inject;
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+
+import io.quarkus.logging.Log;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
 
 import org.arachna.jsonexporter.api.JsonExporterNotFoundException;
 import org.arachna.jsonexporter.service.JSonScrapeService;
@@ -24,9 +26,6 @@ public class JsonExportResource {
      */
     @Inject
     JSonScrapeService scrapeService;
-
-    @Inject
-    Logger logger;
 
     /**
      * @param targetUrl
@@ -55,7 +54,7 @@ public class JsonExportResource {
             String message = String.format("Scrape target '%s' not found!", targetUrl.get());
             response = Response.status(Response.Status.NOT_FOUND).entity(message).build();
 
-            logger.errorf(message);
+            Log.errorf(message);
         }
 
         return response;
