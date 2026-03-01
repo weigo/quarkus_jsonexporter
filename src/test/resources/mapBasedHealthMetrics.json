@@ -1,0 +1,20 @@
+{
+  "status": "UP",
+  "checks": [
+    {
+      "name": "example backend",
+      "status": "UP"
+    },
+    {
+      "name": "Database connections health check",
+      "status": "UP",
+      "data": {
+        "data source one": "UP",
+        "data source two": "UP",
+        "data source three": "DOWN",
+        "data source four": "UP"
+      }
+    }
+  ]
+}
+

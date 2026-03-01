@@ -1,5 +1,3 @@
-version: '2.3'
-
 networks:
   quarkus-json-exporter-network:
 #    external: true

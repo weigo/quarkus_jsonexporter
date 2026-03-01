@@ -12,5 +12,11 @@ public enum ScrapeType {
     /**
      * Scraped result represents a JSON object where values or labels can be extracted from.
      */
-    OBJECT
+    OBJECT,
+
+    /**
+     * Scraped result shall be converted to list of metrics: keys are converted to labels, their values will be converted to the
+     * respective metrics values.
+     */
+    MAP
 }

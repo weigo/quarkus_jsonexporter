@@ -115,6 +115,16 @@ public interface JSonExporterConfig {
              * @return mapper specification
              */
             Optional<MapperSpec> mapper();
+
+            /**
+             * Label to use for keys of a map mapper.
+             * <p>
+             * Adds a distinction to generated metrics of the form 'metric_name[keyLabel="key"] = value'.
+             *
+             * @return label to add to created metric entries
+             */
+            @WithName("key_label")
+            Optional<String> keyLabel();
         }
 
         /**

@@ -7,6 +7,8 @@ import java.util.Optional;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.MapperType;
 
+import static org.arachna.jsonexporter.config.MapperType.STRING_AS_VALUE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -42,19 +44,12 @@ public class ValueMapperFactory {
      * @return the mapper to use.
      */
     public ValueMapper create(Optional<JSonExporterConfig.Module.MapperSpec> mapperSpec) {
-        ValueMapper mapper;
         JSonExporterConfig.Module.MapperSpec spec = mapperSpec.orElse(defaultMapperSpec);
 
-        switch (spec.mapperType()) {
-            case STRING_AS_VALUE:
-                mapper = new String2ValueMapper(spec);
-                break;
-            case DEFAULT:
-            default:
-                mapper = this.defaultMapper;
-                break;
+        if (STRING_AS_VALUE.equals(spec.mapperType())) {
+            return new String2ValueMapper(spec);
         }
 
-        return mapper;
+        return defaultMapper;
     }
 }

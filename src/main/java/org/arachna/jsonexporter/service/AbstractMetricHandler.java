@@ -48,27 +48,32 @@ abstract class AbstractMetricHandler implements MetricHandler {
 
         for (Map.Entry<String, Double> entry : values.entrySet()) {
             final Double value = entry.getValue();
-            String metricName =
-                entry.getKey() != null && !entry.getKey().isEmpty() ? String.format("%s_%s", metricSpec.name(), entry.getKey())
-                                                                    : metricSpec.name();
+            String metricName = getMetricName(entry.getKey());
 
-            switch (metricSpec.sampleType()) {
-                case COUNTER:
-                    CounterImpl counter = new CounterImpl(metricName, metricSpec.help(), labels);
-                    counter.inc(value);
-                    registry.register(counter);
-                    break;
-
-                case GAUGE:
-                    GaugeImpl gauge = new GaugeImpl(metricName, metricSpec.help(), labels);
-                    gauge.setValue(value);
-
-                    registry.register(gauge);
-                    break;
-                default:
-                    throw new IllegalStateException("Unexpected value: " + metricSpec.sampleType());
-            }
+            createMetric(registry, metricName, labels, value);
         }
+    }
+
+    protected void createMetric(final MetricsRegistry registry, final String metricName, final Collection<Tag> labels, final Double value) {
+        switch (metricSpec.sampleType()) {
+            case COUNTER -> {
+                CounterImpl counter = new CounterImpl(metricName, metricSpec.help(), labels);
+                counter.inc(value);
+                registry.register(counter);
+            }
+            case GAUGE -> {
+                GaugeImpl gauge = new GaugeImpl(metricName, metricSpec.help(), labels);
+                gauge.setValue(value);
+
+                registry.register(gauge);
+            }
+            default -> throw new IllegalStateException("Unexpected value: " + metricSpec.sampleType());
+        }
+    }
+
+    protected String getMetricName(final String metricNameExtension) {
+        return metricNameExtension != null && !metricNameExtension.isEmpty() ? String.format("%s_%s", metricSpec.name(),
+            metricNameExtension) : metricSpec.name();
     }
 
     Map<String, Double> getValues(Object json) {

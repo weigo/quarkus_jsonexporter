@@ -1,0 +1,6 @@
+# HELP health_status Health Status
+# TYPE health_status gauge
+health_status[datasource="data source one"] 1.0
+health_status[datasource="data source two"] 1.0
+health_status[datasource="data source three"] 0.0
+health_status[datasource="data source four"] 1.0

@@ -74,3 +74,17 @@ quarkus:
                   value: 1
                 - key: DOWN
                   value: 0
+      - name: map_entries_mapper
+        metrics:
+          - name: health_status
+            help: Health Status
+            path: $.checks[?(@.name=="Database connections health check")].data
+            type: map
+            key_label: datasource
+            mapper:
+              type: STRING_AS_VALUE
+              mappings:
+                - key: UP
+                  value: 1
+                - key: DOWN
+                  value: 0

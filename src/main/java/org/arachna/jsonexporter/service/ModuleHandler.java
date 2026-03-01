@@ -36,11 +36,11 @@ public class ModuleHandler {
      */
     ModuleHandler(Configuration configuration, JSonExporterConfig.Module module, ValueMapperFactory valueMapperFactory) {
         this.jsonProvider = configuration.jsonProvider();
-        this.metricHandlers = module.metrics()
-            .stream()
-            .map(metric -> ScrapeType.VALUE == metric.type() ? new ValueMetricHandler(metric, valueMapperFactory)
-                                                             : new ObjectMetricHandler(metric, valueMapperFactory))
-            .collect(Collectors.toList());
+        this.metricHandlers = module.metrics().stream().map(metric -> switch (metric.type()) {
+            case ScrapeType.VALUE -> new ValueMetricHandler(metric, valueMapperFactory);
+            case ScrapeType.MAP -> new MapMetricHandler(metric, valueMapperFactory);
+            case ScrapeType.OBJECT -> new ObjectMetricHandler(metric, valueMapperFactory);
+        }).collect(Collectors.toList());
     }
 
     /**
