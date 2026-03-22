@@ -58,7 +58,7 @@ public class TextFormat004Writer extends Writer {
                 writer.write("\"");
 
                 if (labels.hasNext()) {
-                    writer.write("\"");
+                    writer.write(", ");
                 }
             }
 

@@ -57,7 +57,7 @@ class TextFormat004WriterTest {
     }
 
     @Test
-    void writeSampleWithTags() throws IOException {
+    void writeSampleWithTag() throws IOException {
         CounterImpl counter = new CounterImpl("request_count", "Request count", List.of(new ImmutableTag("tag", "x")));
         registry.register(counter);
         writer.write(registry.samples());
@@ -66,6 +66,20 @@ class TextFormat004WriterTest {
             # HELP request_count Request count
             # TYPE request_count counter
             request_count[tag="x"] 0.0
+            """));
+    }
+
+    @Test
+    void writeSampleWithTags() throws IOException {
+        CounterImpl counter =
+            new CounterImpl("request_count", "Request count", List.of(new ImmutableTag("tag2", "x"), new ImmutableTag("tag1", "x")));
+        registry.register(counter);
+        writer.write(registry.samples());
+
+        assertThat(result.toString(), equalTo("""
+            # HELP request_count Request count
+            # TYPE request_count counter
+            request_count[tag1="x", tag2="x"] 0.0
             """));
     }
 }
