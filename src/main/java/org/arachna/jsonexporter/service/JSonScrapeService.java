@@ -3,9 +3,6 @@ package org.arachna.jsonexporter.service;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 import com.jayway.jsonpath.Configuration;
 
@@ -14,6 +11,8 @@ import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 
 import io.smallrye.common.constraint.NotNull;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.ApplicationScoped;
 
 /**
  * Service using the module configuration to extract metrics from scrape targets.
@@ -23,16 +22,16 @@ public class JSonScrapeService {
     /**
      * Module configuration for metric extraction from scrape targets.
      */
-    @Inject
     JSonExporterConfig config;
 
     /**
      * Provider for actual scraping of JSON metrics.
      */
-    @Inject
     JSonScrapeServiceProvider jsonScrapeServiceProvider;
 
-    @Inject
+    /**
+     *
+     */
     ValueMapperFactory valueMapperFactory;
 
     /**
@@ -40,14 +39,24 @@ public class JSonScrapeService {
      */
     Map<String, ModuleHandler> modules = new HashMap<>();
 
+    public JSonScrapeService(final JSonExporterConfig config, final JSonScrapeServiceProvider jsonScrapeServiceProvider,
+        final ValueMapperFactory valueMapperFactory) {
+        this.config = config;
+        this.jsonScrapeServiceProvider = jsonScrapeServiceProvider;
+        this.valueMapperFactory = valueMapperFactory;
+    }
+
     /**
      * Initialize modules from configuration.
      */
     @PostConstruct
     void init() {
         final Configuration configuration = Configuration.defaultConfiguration(); //.addOptions(Option.ALWAYS_RETURN_LIST);
-
-        config.modules().forEach(module -> modules.put(module.name(), new ModuleHandler(configuration, module, valueMapperFactory)));
+        config.modules().forEach(module -> {
+            modules.containsKey(module.name());
+            ModuleHandler handler = new ModuleHandler(configuration, module, valueMapperFactory);
+            modules.put(module.name(), handler);
+        });
     }
 
     /**
