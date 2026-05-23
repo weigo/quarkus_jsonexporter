@@ -9,6 +9,7 @@ import org.arachna.jsonexporter.api.SampleType;
 import io.smallrye.config.ConfigMapping;
 import io.smallrye.config.WithDefault;
 import io.smallrye.config.WithName;
+import jakarta.validation.constraints.NotEmpty;
 
 /**
  * JSON exporter Configuration API.
@@ -47,12 +48,14 @@ public interface JSonExporterConfig {
         /**
          * A Metric specification.
          */
+        @MetricValidationConstraint
         interface Metric {
             /**
              * Name of the metric.
              *
              * @return name of metric
              */
+            @NotEmpty
             String name();
 
             /**
@@ -85,6 +88,7 @@ public interface JSonExporterConfig {
              *
              * @return the help for the scraped metric.
              */
+            @NotEmpty
             String help();
 
             /**
@@ -106,6 +110,7 @@ public interface JSonExporterConfig {
              *
              * @return specification of how to extract a given value.
              */
+//            @NotEmpty
             @WithName("values")
             Map<String, String> valueSpecs();
 

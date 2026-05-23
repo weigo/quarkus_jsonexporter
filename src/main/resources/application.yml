@@ -4,24 +4,31 @@ quarkus:
 #  log:
 #    level: DEBUG
 #    min-level: DEBUG
-  exporter:
-    modules:
-      - name: map_entries_mapper
-        metrics:
-          - name: health_status
-            help: Health Status
-            path: $.checks[?(@.name=="Database connections health check")].data
-            type: object
-            labels:
-              service: service1
-            key_label: datasource
-            mapper:
-              type: STRING_AS_VALUE
-              mappings:
-                - key: UP
-                  value: 1
-                - key: DOWN
-                  value: 0
+"%dev":
+  quarkus:
+    http:
+      port: 7979
+#    log:
+#      level: TRACE
+#      min-level: TRACE
+    exporter:
+      modules:
+        - name: map_entries_mapper
+          metrics:
+            - name: health_status
+              help: Health Status
+              path: $.checks[?(@.name=="Database connections health check")].data
+              type: object
+              labels:
+                datasource: service1
+              key_label: datasource
+              mapper:
+                type: STRING_AS_VALUE
+                mappings:
+                  - key: UP
+                    value: 1
+                  - key: DOWN
+                    value: 0
 "%test":
   quarkus:
     http:

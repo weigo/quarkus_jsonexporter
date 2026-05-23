@@ -22,16 +22,19 @@ public class JSonScrapeService {
     /**
      * Module configuration for metric extraction from scrape targets.
      */
+    //@Inject
     JSonExporterConfig config;
 
     /**
      * Provider for actual scraping of JSON metrics.
      */
+    //@Inject
     JSonScrapeServiceProvider jsonScrapeServiceProvider;
 
     /**
      *
      */
+    //@Inject
     ValueMapperFactory valueMapperFactory;
 
     /**
@@ -39,8 +42,8 @@ public class JSonScrapeService {
      */
     Map<String, ModuleHandler> modules = new HashMap<>();
 
-    public JSonScrapeService(final JSonExporterConfig config, final JSonScrapeServiceProvider jsonScrapeServiceProvider,
-        final ValueMapperFactory valueMapperFactory) {
+    public JSonScrapeService(JSonExporterConfig config, JSonScrapeServiceProvider jsonScrapeServiceProvider,
+        ValueMapperFactory valueMapperFactory) {
         this.config = config;
         this.jsonScrapeServiceProvider = jsonScrapeServiceProvider;
         this.valueMapperFactory = valueMapperFactory;

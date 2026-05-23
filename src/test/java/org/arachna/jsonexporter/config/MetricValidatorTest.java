@@ -3,7 +3,6 @@ package org.arachna.jsonexporter.config;
 import java.util.Map;
 import java.util.Optional;
 
-import org.jspecify.annotations.NonNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
