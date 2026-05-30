@@ -32,7 +32,7 @@ pipeline {
         stage('docker image') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: ${params.MAVEN_SETTINGS}, variable: 'SETTINGS_XML')]) {
+                    configFileProvider([configFile(fileId: 'MySettings', variable: 'SETTINGS_XML')]) {
                         sh """
                            cp $SETTINGS_XML settings.xml
                            docker build --build-arg DOCKER_REGISTRY="${params.DOCKER_REGISTRY}/" -f src/main/docker/Dockerfile.jvm 
