@@ -32,7 +32,7 @@ pipeline {
         stage('docker image') {
             steps {
                 script {
-                    configFileProvider([configFile(fileId: 'MySettings', variable: 'SETTINGS_XML')]) {
+                    configFileProvider([configFile(fileId: '8cf374e4-afaa-4861-9153-87b0ee09d83c', variable: 'SETTINGS_XML')]) {
                         sh """
                            cp $SETTINGS_XML settings.xml
                            docker build --build-arg DOCKER_REGISTRY="${params.DOCKER_REGISTRY}/" -f src/main/docker/Dockerfile.jvm 
