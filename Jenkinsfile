@@ -46,4 +46,27 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            emailext(body: '${SCRIPT, template = "groovy-html.template"}',
+                    mimeType: 'text/html',
+                    from: 'jenkins',
+                    recipientProviders: [
+                            [$class: 'DevelopersRecipientProvider'],
+                            [$class: 'RequesterRecipientProvider']
+                    ],
+                    subject: "[JENKINS] '${JOB_NAME}' (${BUILD_NUMBER}) abgeschlossen - Image ${imageName} gebaut.")
+        }
+        failure {
+            emailext(body: '${SCRIPT, template = "groovy-html.template"}',
+                    mimeType: 'text/html',
+                    from: 'jenkins',
+                    recipientProviders: [
+                            [$class: 'DevelopersRecipientProvider'],
+                            [$class: 'RequesterRecipientProvider']
+                    ],
+                    subject: "[JENKINS] FAILURE: '${JOB_NAME}' (${BUILD_NUMBER}) wegen Fehlern abgebrochen.")
+        }
+    }
 }
