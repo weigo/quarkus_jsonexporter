@@ -21,8 +21,6 @@ public class ValueMetricHandler extends AbstractMetricHandler {
      *     metric specification to build the handler from
      */
     public ValueMetricHandler(JSonExporterConfig.Module.Metric metricSpec, ValueMapperFactory valueMapperFactory) {
-        super(metricSpec);
-
         if (!ScrapeType.VALUE.equals(metricSpec.type())) {
             throw new IllegalArgumentException(
                 String.format("A value metric handler configuration should specify '%s' as scrape type!", ScrapeType.VALUE.name()));
@@ -32,6 +30,8 @@ public class ValueMetricHandler extends AbstractMetricHandler {
             throw new IllegalArgumentException(
                 String.format("The single value metric '%s' must not specify a values section", metricSpec.name()));
         }
+
+        super(metricSpec);
 
         try {
             this.valueHandlers.add(
@@ -45,6 +45,6 @@ public class ValueMetricHandler extends AbstractMetricHandler {
 
     @Override
     public void collectMetrics(MetricsRegistry registry, Object document) {
-        createMetric(registry, document);
+        createMetric(registry, document, getLabels(document));
     }
 }

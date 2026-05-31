@@ -1,5 +1,6 @@
 package org.arachna.jsonexporter.service;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.jayway.jsonpath.InvalidPathException;
@@ -11,6 +12,8 @@ import org.arachna.jsonexporter.config.JSonExporterConfig;
 import org.arachna.jsonexporter.config.ScrapeType;
 import org.arachna.jsonexporter.registry.MetricsRegistry;
 import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
+
+import io.micrometer.core.instrument.Tag;
 
 /**
  * Handler for extracting JSON objects from a JSON metric.
@@ -28,11 +31,11 @@ class ObjectMetricHandler extends AbstractMetricHandler implements MetricHandler
      *     metric specification to use for configuration.
      */
     public ObjectMetricHandler(JSonExporterConfig.Module.Metric metricSpec, ValueMapperFactory valueMapperFactory) {
-        super(metricSpec);
-
         if (!ScrapeType.OBJECT.equals(metricSpec.type())) {
             throw new IllegalArgumentException("An object metric handler configuration should specify 'OBJECT' as scrape type!");
         }
+
+        super(metricSpec);
 
         try {
             pathSpec = JsonPath.compile(metricSpec.path());
@@ -65,7 +68,7 @@ class ObjectMetricHandler extends AbstractMetricHandler implements MetricHandler
 
         try {
             result = ((JSONArray) tmp).toArray();
-        } catch (ClassCastException cce) {
+        } catch (ClassCastException _) {
             result = new Object[] { tmp };
         }
 
@@ -75,10 +78,11 @@ class ObjectMetricHandler extends AbstractMetricHandler implements MetricHandler
     @Override
     public void collectMetrics(MetricsRegistry registry, Object document) {
         Object[] metrics = getMetricData(document);
+        Collection<Tag> labels = getLabels(document);
 
         for (Object metric : metrics) {
             // create Metric object and register with registry.
-            createMetric(registry, metric);
+            createMetric(registry, metric, labels);
         }
     }
 }

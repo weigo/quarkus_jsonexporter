@@ -76,25 +76,26 @@
 #
 ###
 ARG DOCKER_REGISTRY
-FROM ${DOCKER_REGISTRY}library/maven:3.9-eclipse-temurin-26-alpine AS build
+FROM ${DOCKER_REGISTRY}library/maven:3.9-eclipse-temurin-25-alpine AS build
 WORKDIR /usr/src/app
 COPY settings.xml .
 COPY pom.xml .
-COPY .env .
 COPY src ./src
 RUN mvn -s settings.xml clean package
 
-FROM ${DOCKER_REGISTRY}library/eclipse-temurin:26-jre-ubi10-minimal
+FROM registry.access.redhat.com/ubi9/openjdk-25-runtime:1.24
 
 ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en'
 
 # We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 target/quarkus-app/*.jar /deployments/
-COPY --chown=185 target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+COPY --from=build --chown=185 /usr/src/app/target/quarkus-app/lib/ /deployments/lib/
+COPY --from=build --chown=185 /usr/src/app/target/quarkus-app/*.jar /deployments/
+COPY --from=build --chown=185 /usr/src/app/target/quarkus-app/app/ /deployments/app/
+COPY --from=build --chown=185 /usr/src/app/target/quarkus-app/quarkus/ /deployments/quarkus/
 
 EXPOSE 8080
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
+
+ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]

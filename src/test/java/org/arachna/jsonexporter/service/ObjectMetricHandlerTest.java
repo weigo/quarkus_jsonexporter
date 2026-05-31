@@ -28,6 +28,19 @@ class ObjectMetricHandlerTest extends AbstractMetricHandlerTest {
         assertGeneratedMetric(metricResourceName);
     }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+        "nested_structured_using_object_with_additional_label,nested_structured,/structuredHealth.json,/structuredHealthWithAdditionalLabel"
+            + ".metric" })
+    void testObjectMetricHandlerWithAdditionalLabel(String moduleName, String metricName, String jsonResourceName,
+        String metricResourceName)
+        throws IOException {
+        JSonExporterConfig.Module.Metric metric = getMetric(moduleName, metricName);
+        ObjectMetricHandler handler = new ObjectMetricHandler(metric, valueMapperFactory);
+        handler.collectMetrics(registry, readDocument(jsonResourceName));
+        assertGeneratedMetric(metricResourceName);
+    }
+
     @Test
     void objectMetricHandlerShouldNotInstantiateWithWrongHandlerType() {
         JSonExporterConfig.Module.Metric metric = getMetric("health", "health");

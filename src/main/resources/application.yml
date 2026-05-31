@@ -71,6 +71,16 @@ quarkus:
               service: service2
             values:
               service: $.service2
+      - name: nested_structured_using_object_with_additional_label
+        metrics:
+          - name: nested_structured
+            help: nested structured
+            path: $.data
+            type: object
+            labels:
+              stage: $.stage
+            values:
+              service: $.service1
       - name: health
         metrics:
           - name: health
@@ -107,6 +117,22 @@ quarkus:
           - name: health_status
             help: Health Status
             path: $.checks[?(@.name=="Database connections health check")].data
+            type: map
+            key_label: datasource
+            mapper:
+              type: STRING_AS_VALUE
+              mappings:
+                - key: UP
+                  value: 1
+                - key: DOWN
+                  value: 0
+      - name: map_entries_mapper_with_additional_label
+        metrics:
+          - name: health_status
+            help: Health Status
+            path: $.checks[?(@.name=="Database connections health check")].data
+            labels:
+              stage: $.stage
             type: map
             key_label: datasource
             mapper:

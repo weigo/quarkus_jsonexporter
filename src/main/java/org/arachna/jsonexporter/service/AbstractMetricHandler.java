@@ -42,9 +42,8 @@ abstract class AbstractMetricHandler implements MetricHandler {
         initLabelHandlers(metricSpec.labelSpecs().entrySet());
     }
 
-    void createMetric(MetricsRegistry registry, Object json) {
+    void createMetric(MetricsRegistry registry, Object json, Collection<Tag> labels) {
         Map<String, Double> values = getValues(json);
-        Collection<Tag> labels = getLabels(json);
 
         for (Map.Entry<String, Double> entry : values.entrySet()) {
             final Double value = entry.getValue();

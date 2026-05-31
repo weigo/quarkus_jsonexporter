@@ -15,6 +15,7 @@
         "data source four": "UP"
       }
     }
-  ]
+  ],
+  "stage": "test"
 }
 

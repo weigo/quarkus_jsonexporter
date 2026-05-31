@@ -20,7 +20,18 @@ class MapMetricHandlerTest extends AbstractMetricHandlerTest {
     @ParameterizedTest
     @CsvSource(value = {
         "map_entries_mapper,health_status,/mapBasedHealthMetrics.json,/mapBasedHealthMetrics.metric" })
-    void testObjectMetricHandler(String moduleName, String metricName, String jsonResourceName, String metricResourceName)
+    void testMapMetricHandler(String moduleName, String metricName, String jsonResourceName, String metricResourceName)
+        throws IOException {
+        JSonExporterConfig.Module.Metric metric = getMetric(moduleName, metricName);
+        MapMetricHandler handler = new MapMetricHandler(metric, valueMapperFactory);
+        handler.collectMetrics(registry, readDocument(jsonResourceName));
+        assertGeneratedMetric(metricResourceName);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+        "map_entries_mapper_with_additional_label,health_status,/mapBasedHealthMetrics.json,/mapBasedHealthMetricsWithLabel.metric" })
+    void testMapMetricHandlerWithAdditionalLabel(String moduleName, String metricName, String jsonResourceName, String metricResourceName)
         throws IOException {
         JSonExporterConfig.Module.Metric metric = getMetric(moduleName, metricName);
         MapMetricHandler handler = new MapMetricHandler(metric, valueMapperFactory);

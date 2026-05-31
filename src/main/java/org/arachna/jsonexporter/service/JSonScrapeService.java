@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.Option;
 
 import org.arachna.jsonexporter.api.JsonExporterException;
 import org.arachna.jsonexporter.config.JSonExporterConfig;
@@ -13,6 +14,7 @@ import org.arachna.jsonexporter.service.mapper.ValueMapperFactory;
 import io.smallrye.common.constraint.NotNull;
 import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.validation.ValidationException;
 
 /**
  * Service using the module configuration to extract metrics from scrape targets.
@@ -54,9 +56,12 @@ public class JSonScrapeService {
      */
     @PostConstruct
     void init() {
-        final Configuration configuration = Configuration.defaultConfiguration(); //.addOptions(Option.ALWAYS_RETURN_LIST);
+        final Configuration configuration = Configuration.defaultConfiguration().addOptions(Option.ALWAYS_RETURN_LIST);
         config.modules().forEach(module -> {
-            modules.containsKey(module.name());
+            if (modules.containsKey(module.name())) {
+                throw new ValidationException(String.format("Module '%s' already exists!", module.name()));
+            }
+
             ModuleHandler handler = new ModuleHandler(configuration, module, valueMapperFactory);
             modules.put(module.name(), handler);
         });

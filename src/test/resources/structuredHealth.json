@@ -3,5 +3,6 @@
   "data": {
     "service1": true,
     "service2": false
-  }
+  },
+  "stage": "test"
 }

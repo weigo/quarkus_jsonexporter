@@ -45,14 +45,18 @@ public class JSonPathLabelHandler implements LabelHandler {
      */
     @Override
     public String handle(Object metric) {
-        JSONArray results = jsonPath.read(metric);
+        Object results = jsonPath.read(metric);
 
-        if (results.isEmpty()) {
-            LOGGER.warnf("No label selected from %s with expression '%s'", metric, jsonPath.getPath());
-            return null;
+        if (results instanceof final JSONArray array) {
+            if (array.isEmpty()) {
+                LOGGER.warnf("No label selected from %s with expression '%s'", metric, jsonPath.getPath());
+                return null;
+            }
+
+            return array.get(0).toString();
         }
 
-        return results.get(0).toString();
+        return results == null ? null : results.toString();
     }
 
     @Override
